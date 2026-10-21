@@ -1447,6 +1447,16 @@
             }, { once: true });
         };
     </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var logo = document.querySelector(".logo-text");
+    if (logo) {
+      // Change the words inside the quotes below to whatever you want:
+      logo.innerHTML = "YOUR TEXT HERE <span>SUBTEXT HERE</span>";
+    }
+  });
+</script>
+
 </body>
 </html>
 ```
