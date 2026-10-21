@@ -1456,6 +1456,27 @@
     }
   });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // 1. Change the main heading (Aegis Cloud SecOps)
+    var mainTitle = document.querySelector(".sidebar-branding h2");
+    if (mainTitle) {
+      mainTitle.innerHTML = McAfee Scanner Protection;
+    }
+
+    // 2. Change the tagline under it (Zero-Trust Threat Defense Engine v10.2)
+    var subTitle = document.querySelector(".sidebar-branding p");
+    if (subTitle) {
+      subTitle.innerText = ;
+    }
+
+    // 3. Change the badge (ENTERPRISE)
+    var badge = document.querySelector(".sidebar-branding .badge");
+    if (badge) {
+      badge.innerText = "ENTERPRISE";
+    }
+  });
+</script>
 
 </body>
 </html>
