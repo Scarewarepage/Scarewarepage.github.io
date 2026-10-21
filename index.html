@@ -4,1113 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mcafee Threat Panel — McAfee Total Security</title>
-    
-    <!-- Google Fonts: Inter & JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --bg-body: #030712;
-            --bg-sidebar: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-focus: #38bdf8;
-            --red-alert: #ef4444;
-            --red-glow: rgba(239, 68, 68, 0.25);
-            --amber-warn: #f59e0b;
-            --amber-glow: rgba(245, 158, 11, 0.2);
-            --emerald-good: #10b981;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --radius-md: 12px;
-            --radius-sm: 8px;
-            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-            --shadow-toast: 0 20px 30px -10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(239, 68, 68, 0.2);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            position: relative;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Clean Flashing Panic State */
-        .flash-panic-bg {
-            animation: cleanPanicFlash 0.8s ease-in-out infinite alternate;
-        }
-
-        @keyframes cleanPanicFlash {
-            0% { background-color: var(--bg-body); }
-            100% { background-color: #2a080c; }
-        }
-
-        /* --------------------------------------------------
-         * HEADER BAR
-         * -------------------------------------------------- */
-        .app-header {
-            height: 64px;
-            background-color: var(--bg-sidebar);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .brand-section {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        /* Continuous Smooth Spinning Skull SVG Logo */
-        .skull-logo-box {
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.2));
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .skull-logo-svg {
-            width: 24px;
-            height: 24px;
-            animation: smoothSpin 5s linear infinite;
-        }
-
-        @keyframes smoothSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.01em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .brand-badge {
-            font-size: 0.65rem;
-            font-weight: 700;
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--red-alert);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-            letter-spacing: 0.05em;
-        }
-
-        .brand-subtitle {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .nav-link {
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-decoration: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            transition: all 0.15s ease;
-        }
-
-        .nav-link.active {
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-link.expired {
-            color: var(--red-alert);
-            font-weight: 600;
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        /* Negative Countdown Timer Badge */
-        .timer-badge-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            padding: 6px 14px;
-            border-radius: var(--radius-sm);
-            box-shadow: 0 0 12px var(--red-glow);
-        }
-
-        .timer-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .timer-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--red-alert);
-        }
-
-        .mute-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.15s ease;
-        }
-
-        .mute-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-        }
-
-        /* --------------------------------------------------
-         * LAYOUT: SIDEBAR & MAIN CONTENT
-         * -------------------------------------------------- */
-        .app-body {
-            display: flex;
-            flex: 1;
-        }
-
-        .app-sidebar {
-            width: 240px;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
-            padding: 20px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .sidebar-item:hover, .sidebar-item.active {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-primary);
-        }
-
-        .sidebar-item.active {
-            border-left: 3px solid var(--amber-warn);
-        }
-
-        .sidebar-icon {
-            font-size: 1.1rem;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 28px 36px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* --------------------------------------------------
-         * BANNERS & NOTIFICATIONS
-         * -------------------------------------------------- */
-        .final-warning-header {
-            font-family: 'Inter', -apple-system, sans-serif;
-            font-weight: 900;
-            font-size: clamp(1.8rem, 4vw, 3.2rem);
-            letter-spacing: -0.03em;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 24px;
-            background: linear-gradient(180deg, #ffffff 0%, var(--amber-warn) 50%, var(--red-alert) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
-            animation: subtleBounce 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes subtleBounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-4px); }
-        }
-
-        .congrats-floating-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, var(--amber-warn), #d97706);
-            color: #000;
-            font-weight: 800;
-            font-size: 0.75rem;
-            padding: 8px 16px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            box-shadow: 0 4px 15px var(--amber-glow);
-            margin-bottom: 24px;
-        }
-
-        /* --------------------------------------------------
-         * DASHBOARD CARDS & METRICS
-         * -------------------------------------------------- */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px;
-        }
-
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            box-shadow: var(--shadow-card);
-            position: relative;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .metrics-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-
-        .metric-tile {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 14px;
-        }
-
-        .metric-label {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .metric-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 6px;
-            color: var(--text-primary);
-        }
-
-        .metric-value.danger {
-            color: var(--red-alert);
-        }
-
-        /* Modern Smooth Progress Bar */
-        .scan-progress-box {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-
-        .scan-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-        }
-
-        .progress-track {
-            height: 12px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 6px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--amber-warn), var(--red-alert));
-            border-radius: 6px;
-            transition: width 0.12s linear;
-            box-shadow: 0 0 10px var(--red-glow);
-        }
-
-        /* Red Panic Alert Banner */
-        .panic-hero-card {
-            display: none;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(153, 27, 27, 0.4));
-            border: 2px solid var(--red-alert);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 0 30px var(--red-glow);
-            animation: smoothPulse 1s ease-in-out infinite alternate;
-        }
-
-        @keyframes smoothPulse {
-            0% { border-color: rgba(239, 68, 68, 0.5); }
-            100% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 40px var(--red-glow); }
-        }
-
-        .panic-hero-title {
-            font-size: 1.25rem;
-            font-weight: 900;
-            color: #ffffff;
-            letter-spacing: -0.01em;
-            margin-bottom: 6px;
-        }
-
-        .panic-hero-sub {
-            font-size: 0.85rem;
-            color: #fca5a5;
-        }
-
-        /* Buttons */
-        .action-row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-saas {
-            flex: 1;
-            padding: 12px 20px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 0.85rem;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.15s ease;
-        }
-
-        .btn-danger {
-            background: var(--red-alert);
-            color: #ffffff;
-            box-shadow: 0 4px 14px var(--red-glow);
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            transform: translateY(-1px);
-        }
-
-        .btn-amber {
-            background: var(--amber-warn);
-            color: #000000;
-            box-shadow: 0 4px 14px var(--amber-glow);
-        }
-
-        .btn-amber:hover {
-            background: #d97706;
-            transform: translateY(-1px);
-        }
-
-        /* --------------------------------------------------
-         * MODERN TOAST POP-UP NOTIFICATIONS
-         * -------------------------------------------------- */
-        .toast-popover {
-            position: fixed;
-            width: 360px;
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-toast);
-            z-index: 9999;
-            overflow: hidden;
-            animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes toastSlideIn {
-            0% { transform: translateY(20px) scale(0.95); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        .toast-header {
-            background: rgba(15, 23, 42, 0.8);
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .toast-title {
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--amber-warn);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .toast-close {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 4px;
-            transition: color 0.15s ease;
-        }
-
-        .toast-close:hover {
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .toast-body {
-            padding: 16px;
-        }
-
-        .toast-message {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-
-        .toast-btn {
-            width: 100%;
-            padding: 8px 12px;
-            background: var(--red-alert);
-            border: none;
-            border-radius: var(--radius-sm);
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        /* --------------------------------------------------
-         * LIVE CHAT WIDGET ("DAVE")
-         * -------------------------------------------------- */
-        .chat-drawer {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 340px;
-            background: var(--bg-sidebar);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: rgba(30, 41, 59, 0.8);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .dave-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--amber-warn), #d97706);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: #000;
-            font-size: 0.85rem;
-        }
-
-        .dave-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .dave-name {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .dave-status {
-            font-size: 0.68rem;
-            color: var(--emerald-good);
-            font-weight: 600;
-        }
-
-        .chat-messages {
-            height: 190px;
-            padding: 12px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background: rgba(3, 7, 18, 0.4);
-        }
-
-        .msg-bubble {
-            max-width: 88%;
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            font-size: 0.82rem;
-            line-height: 1.4;
-        }
-
-        .msg-bubble.dave {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-            align-self: flex-start;
-        }
-
-        .msg-bubble.user {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: #fef08a;
-            align-self: flex-end;
-        }
-
-        .chat-input-area {
-            display: flex;
-            padding: 8px;
-            background: var(--bg-sidebar);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .chat-input {
-            flex: 1;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            color: var(--text-primary);
-            font-size: 0.8rem;
-            outline: none;
-        }
-
-        .chat-input:focus {
-            border-color: var(--border-focus);
-        }
-
-        .chat-send-btn {
-            background: var(--amber-warn);
-            border: none;
-            color: #000;
-            font-weight: 700;
-            font-size: 0.75rem;
-            padding: 8px 14px;
-            margin-left: 6px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .footer-disclaimer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border-color);
-        }
-    </style>
-</head>
-<body id="appBody">
-
-    <!-- Header Navigation Bar -->
-    <header class="app-header">
-        <div class="brand-section">
-            <div class="skull-logo-box" onclick="playSynthSound('beep')">
-                <svg class="skull-logo-svg" viewBox="0 0 100 100">
-                    <path d="M50 12 C28 12 18 30 18 50 C18 64 26 74 36 77 L36 86 L44 86 L44 80 L56 80 L56 86 L64 86 L64 77 C74 74 82 64 82 50 C82 30 72 12 50 12 Z" fill="#f59e0b" stroke="#ef4444" stroke-width="4"/>
-                    <circle cx="36" cy="46" r="6" fill="#0f172a" />
-                    <circle cx="64" cy="46" r="6" fill="#0f172a" />
-                    <polygon points="50,56 44,66 56,66" fill="#0f172a" />
-                </svg>
-            </div>
-            <div class="brand-text">
-                <div class="brand-title">
-                    Aegis Cloud SecOps
-                    <span class="brand-badge">ENTERPRISE</span>
-                </div>
-                <div class="brand-subtitle">Zero-Trust Threat Defense Engine v10.2</div>
-            </div>
-        </div>
-
-        <nav class="header-nav">
-            <a href="#" class="nav-link active">Dashboard</a>
-            <a href="#" class="nav-link">Threat Matrix</a>
-            <a href="#" class="nav-link">Real-Time AI Firewall</a>
-            <a href="#" class="nav-link expired">Licenses (EXPIRED)</a>
-        </nav>
-
-        <div class="header-right">
-            <!-- Modern Negative Timer Badge -->
-            <div class="timer-badge-container">
-                <span class="timer-label">Session Expiring:</span>
-                <span class="timer-value" id="negativeTimer">05:00</span>
-            </div>
-
-            <button class="mute-btn" onclick="toggleMuteAudio()">
-                <span id="muteIcon">🔊</span> Audio
-            </button>
-        </div>
-    </header>
-
-    <!-- App Body with Sidebar & Dashboard -->
-    <div class="app-body">
-        
-        <!-- Clean SaaS Sidebar -->
-        <aside class="app-sidebar">
-            <div class="sidebar-item active">
-                <span class="sidebar-icon">📊</span>
-                <span>Overview</span>
-            </div>
-            <div class="sidebar-item" onclick="spawnNotification()">
-                <span class="sidebar-icon">🛡️</span>
-                <span>Endpoint Shield</span>
-            </div>
-            <div class="sidebar-item" onclick="spawnNotification()">
-                <span class="sidebar-icon">🌐</span>
-                <span>DNS Inspector</span>
-            </div>
-            <div class="sidebar-item" onclick="spawnNotification()">
-                <span class="sidebar-icon">⚡</span>
-                <span>Heuristic AI</span>
-            </div>
-            <div class="sidebar-item" onclick="spawnNotification()">
-                <span class="sidebar-icon">⚙️</span>
-                <span>Settings</span>
-            </div>
-        </aside>
-
-        <!-- Main Workspace -->
-        <main class="main-content">
-            
-            <!-- Aggressive Modern Header Banner -->
-            <h1 class="final-warning-header">FINAL WARNING</h1>
-
-            <!-- Unexplained Congratulations Banner -->
-            <div>
-                <div class="congrats-floating-pill">
-                    🎉 CONGRATULATIONS! NO EXPLANATION NEEDED!
-                </div>
-            </div>
-
-            <!-- Hero Panic Card (Activates after scan finishes) -->
-            <div class="panic-hero-card" id="panicHeroCard">
-                <div class="panic-hero-title">YOUR COMPUTER HAS BEEN INFECTED WITH 47 VIRUSES. THIS IS NOT A DRILL.</div>
-                <div class="panic-hero-sub">System memory corrupted. Immediate SOC intervention recommended.</div>
-            </div>
-
-            <!-- Main Dashboard Grid -->
-            <div class="dashboard-grid">
-                
-                <!-- Left 8-Col Panel: Deep Scan Engine -->
-                <div class="card" style="grid-column: span 8;">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <span>🔍</span> Deep Threat AI Heuristic Scan
-                        </div>
-                        <span id="scanStatusPill" style="font-size: 0.75rem; font-weight: 700; color: var(--amber-warn);">SCANNING...</span>
-                    </div>
-
-                    <!-- Metric Row -->
-                    <div class="metrics-row">
-                        <div class="metric-tile">
-                            <div class="metric-label">System Integrity</div>
-                            <div class="metric-value danger" id="integrityVal">100%</div>
-                        </div>
-                        <div class="metric-tile">
-                            <div class="metric-label">Threat Vectors</div>
-                            <div class="metric-value danger" id="threatVal">0 Active</div>
-                        </div>
-                        <div class="metric-tile">
-                            <div class="metric-label">Webcam Hijack</div>
-                            <div class="metric-value" style="color: var(--amber-warn);">MONITORED</div>
-                        </div>
-                    </div>
-
-                    <!-- Scan Progress Bar -->
-                    <div class="scan-progress-box">
-                        <div class="scan-labels">
-                            <span id="scannedPath">Analyzing C:\System32\drivers\emotions.sys</span>
-                            <span id="progressText">0%</span>
-                        </div>
-                        <div class="progress-track">
-                            <div class="progress-fill" id="progressBar"></div>
-                        </div>
-                    </div>
-
-                    <div class="action-row">
-                        <button class="btn-saas btn-amber" onclick="triggerManualAlerts()">PURCHASE EMERGENCY REMEDIATION</button>
-                        <button class="btn-saas btn-danger" onclick="triggerManualAlerts()">DEPLOY TOTAL LOCKDOWN</button>
-                    </div>
-                </div>
-
-                <!-- Right 4-Col Panel: Quick Status -->
-                <div class="card" style="grid-column: span 4;">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <span>🚨</span> SOC Operations Support
-                        </div>
-                    </div>
-                    
-                    <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 20px;">
-                        Emergency hotline active. Connect directly to lead SOC engineer Dave for instant manual virus extraction.
-                    </p>
-
-                    <div style="background: rgba(15, 23, 42, 0.8); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); text-align: center;">
-                        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">TOLL-FREE EMERGENCY HOTLINE</div>
-                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--amber-warn); font-family: 'JetBrains Mono'; margin: 4px 0;">1-800-555-DAVE</div>
-                        <div style="font-size: 0.68rem; color: var(--red-alert); font-weight: 600;">(SATIRICAL DEMO ONLY)</div>
-                    </div>
-                </div>
-
-            </div>
-
-            <footer class="footer-disclaimer">
-                Aegis Cloud SecOps Center — Educational Parody & Satire UI. No actual security scanning occurs.
-            </footer>
-        </main>
-    </div>
-
-    <!-- Live Chat Widget ("Dave") -->
-    <div class="chat-drawer">
-        <div class="chat-header">
-            <div class="dave-avatar">D</div>
-            <div class="dave-info">
-                <div class="dave-name">Dave</div>
-                <div class="dave-status">● Senior SOC Lead (Online)</div>
-            </div>
-        </div>
-        <div class="chat-messages" id="chatContainer">
-            <div class="msg-bubble dave">
-                Hello, I am Dave, Senior Security Operations Center Lead. Our telemetry reports 47 critical compromises on your workstation. How can I assist?
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" class="chat-input" id="chatInput" placeholder="Message Dave..." onkeydown="if(event.key==='Enter') handleUserMessage()">
-            <button class="chat-send-btn" onclick="handleUserMessage()">SEND</button>
-        </div>
-    </div>
-
-    <script>
-        /* --------------------------------------------------
-         * WEB AUDIO API SYNTHESIZER
-         * Pure synthesized sound effects (No external files)
-         * -------------------------------------------------- */
-        let audioCtx = null;
-        let soundMuted = false;
-
-        function getAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            return audioCtx;
-        }
-
-        function toggleMuteAudio() {
-            soundMuted = !soundMuted;
-            document.getElementById('muteIcon').innerText = soundMuted ? '🔇' : '🔊';
-        }
-
-        function playSynthSound(type = 'beep') {
-            if (soundMuted) return;
-            try {
-                const ctx = getAudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                if (type === 'beep') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(880, ctx.currentTime);
-                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.12);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.12);
-                } else if (type === 'dave') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08); // E5
-                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.2);
-                }
-            } catch (e) {}
-        }
-
-        /* --------------------------------------------------
-         * SCANNER & PANIC STATE
-         * -------------------------------------------------- */
-        let scanProgress = 0;
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-        const scanStatusPill = document.getElementById('scanStatusPill');
-        const integrityVal = document.getElementById('integrityVal');
-        const threatVal = document.getElementById('threatVal');
-        const panicHeroCard = document.getElementById('panicHeroCard');
-        const appBody = document.getElementById('appBody');
-
-        function startHeuristicScan() {
-            const scanInterval = setInterval(() => {
-                if (scanProgress < 100) {
-                    scanProgress += Math.floor(Math.random() * 3) + 1;
-                    if (scanProgress > 100) scanProgress = 100;
-
-                    progressBar.style.width = scanProgress + '%';
-                    progressText.innerText = scanProgress + '%';
-
-                    if (scanProgress > 30) {
-                        integrityVal.innerText = Math.max(0, 100 - Math.floor(scanProgress * 0.98)) + '%';
-                        threatVal.innerText = Math.floor(scanProgress / 2.2) + ' Active';
-                    }
-                } else {
-                    clearInterval(scanInterval);
-                    // Panic State Trigger
-                    scanStatusPill.innerText = "CRITICAL INFECTION DETECTED";
-                    scanStatusPill.style.color = "var(--red-alert)";
-                    integrityVal.innerText = "0.02%";
-                    threatVal.innerText = "47 Active";
-
-                    panicHeroCard.style.display = "block";
-                    appBody.classList.add('flash-panic-bg');
-
-                    playSynthSound('beep');
-                    startToastSpawner();
-                }
-            }, 60);
-        }
-
-        /* --------------------------------------------------
-         * NEGATIVE COUNTDOWN TIMER
-         * -------------------------------------------------- */
-        let secondsRemaining = 300; // Starts at 05:00
-        const negativeTimer = document.getElementById('negativeTimer');
-
-        setInterval(() => {
-            secondsRemaining--;
-            const absSecs = Math.abs(secondsRemaining);
-            const mins = String(Math.floor(absSecs / 60)).padStart(2, '0');
-            const secs = String(absSecs % 60).padStart(2, '0');
-
-            if (secondsRemaining < 0) {
-                negativeTimer.innerText = `-${mins}:${secs}`;
-            } else {
-                negativeTimer.innerText = `${mins}:${secs}`;
-            }
-        }, 1000);
-
-        /* --------------------------------------------------
-         * TOAST POP-UP NOTIFICATIONS
-         * Spawns every 2 seconds after scan completes
-         * -------------------------------------------------- */
-        const scareMessages = [
-            "MCAFEE SECURITY ALERT: Clock here to scan and clean.",
-            "YOUR PASSWORDS HAVE BEEN STOLEN.",
-            "YOUR WEBCAM IS WATCHING YOU WATCH IT.",
-            "CLICK HERE TO REMOVE THEM!.",
-            "NO, HERE.",         
-        ];
-
-        let msgIndex = 0;
-
-        function spawnNotification(customMsg = null) {
-            const toast = document.createElement('div');
-            toast.className = 'toast-popover';
-
-            const maxLeft = window.innerWidth - 380;
-            const maxTop = window.innerHeight - 200;
-            const posX = Math.max(20, Math.floor(Math.random() * maxLeft));
-            const posY = Math.max(80, Math.floor(Math.random() * maxTop));
-
-            toast.style.left = posX + 'px';
-            toast.style.top = posY + 'px';
-
-            const text = customMsg || scareMessages[msgIndex % scareMessages.length];
-            msgIndex++;
-
-            toast.innerHTML = `
-                <div class="toast-header">
-                    <span class="toast-title">⚠️ SECURITY NOTIFICATION</span>
-                    <button class="toast-close" onclick="closeToast(this)">✕</button>
-                </div>
-                <div class="toast-body">
-                    <div class="toast-message">${text}</div>
-                    <button class="toast-btn" onclick="closeToast(this)">RESOLVE IMMEDIATELY</button>
-                </div>
-            `;
-
-            document.body.appendChild(toast);
-            playSynthSound('beep');
-        }
-
-        function closeToast(btn) {
-            const toast = btn.closest('.toast-popover');
-            if (toast) toast.remove();
-
-            if (Math.random() > 0.4) {
-                setTimeout(() => spawnNotification("Antivirus is at work. please don't close!."), 200);
-            }
-        }
-
-        function triggerManualAlerts() {
-            for (let i = 0; i < 3; i++) {
-                setTimeout(() => spawnNotification(), i * 150);
-            }
-        }
-
-        let spawnerStarted = false;
-        function startToastSpawner() {
-            if (spawnerStarted) return;
-            spawnerStarted = true;
-
-            setInterval(() => {
-                spawnNotification();
-            }, 2000);
-        }
-
-        /* --------------------------------------------------
-         * DAVE LIVE CHAT LOGIC
-         * -------------------------------------------------- */
-        const chatContainer = document.getElementById('chatContainer');
-        const chatInput = document.getElementById('chatInput');
-
-        function handleUserMessage() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-
-            const userMsg = document.createElement('div');
-            userMsg.className = 'msg-bubble user';
-            userMsg.innerText = text;
-            chatContainer.appendChild(userMsg);
-
-            chatInput.value = '';
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            // Immediate Dave Response
-            setTimeout(() => {
-                const daveMsg = document.createElement('div');
-                daveMsg.className = 'msg-bubble dave';
-                daveMsg.innerText = "YOUR DEVICE IS COMPROMISED PLEASE CALL NOW.";
-                chatContainer.appendChild(daveMsg);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-
-                playSynthSound('dave');
-            }, 400);
-        }
-
-        // Initialize audio context on first click & trigger scan
-        window.onload = function() {
-            startHeuristicScan();
-
-            document.body.addEventListener('click', function initAudioOnUserGesture() {
-                getAudioContext();
-                document.body.removeEventListener('click', initAudioOnUserGesture);
-            }, { once: true });
-        };
-    </script>
-</body>
-</html>
-``````html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aegis Cloud SecOps Center — Enterprise Threat Dashboard</title>
+    <title>McAfee Threat Panel. McAfee Total Protection</title>
     
     <!-- Google Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1782,4 +676,777 @@
 
         .virus-chip {
             background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(239, 68, 68, 0.4)
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #fca5a5;
+            animation: virusWiggle 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes virusWiggle {
+            0% { transform: rotate(-3deg) scale(0.98); }
+            100% { transform: rotate(3deg) scale(1.02); }
+        }
+
+        .webcam-viewport {
+            background: #000000;
+            border: 2px solid var(--red-alert);
+            border-radius: var(--radius-sm);
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px var(--red-glow);
+        }
+
+        .webcam-scanline {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(239, 68, 68, 0.8);
+            box-shadow: 0 0 10px var(--red-alert);
+            animation: camScan 2s linear infinite;
+        }
+
+        @keyframes camScan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+
+        /* --------------------------------------------------
+         * LIVE CHAT WIDGET ("DAVE")
+         * -------------------------------------------------- */
+        .chat-drawer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 340px;
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dave-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--amber-warn), #d97706);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #000;
+            font-size: 0.85rem;
+        }
+
+        .dave-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dave-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .dave-status {
+            font-size: 0.68rem;
+            color: var(--emerald-good);
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            height: 190px;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(3, 7, 18, 0.4);
+        }
+
+        .msg-bubble {
+            max-width: 88%;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+
+        .msg-bubble.dave {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            align-self: flex-start;
+        }
+
+        .msg-bubble.user {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fef08a;
+            align-self: flex-end;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 8px;
+            background: var(--bg-sidebar);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--border-focus);
+        }
+
+        .chat-send-btn {
+            background: var(--amber-warn);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 8px 14px;
+            margin-left: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .footer-disclaimer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body id="appBody">
+
+    <!-- Header Navigation Bar -->
+    <header class="app-header">
+        <div class="brand-section" onclick="resetScanAndPanic()">
+            <div class="skull-logo-box">
+                <svg class="skull-logo-svg" viewBox="0 0 100 100">
+                    <path d="M50 12 C28 12 18 30 18 50 C18 64 26 74 36 77 L36 86 L44 86 L44 80 L56 80 L56 86 L64 86 L64 77 C74 74 82 64 82 50 C82 30 72 12 50 12 Z" fill="#f59e0b" stroke="#ef4444" stroke-width="4"/>
+                    <circle cx="36" cy="46" r="6" fill="#0f172a" />
+                    <circle cx="64" cy="46" r="6" fill="#0f172a" />
+                    <polygon points="50,56 44,66 56,66" fill="#0f172a" />
+                </svg>
+            </div>
+            <div class="brand-text">
+                <div class="brand-title">
+                    Aegis Cloud SecOps
+                    <span class="brand-badge">ENTERPRISE</span>
+                </div>
+                <div class="brand-subtitle">Zero-Trust Threat Defense Engine v10.2</div>
+            </div>
+        </div>
+
+        <nav class="header-nav">
+            <a class="nav-link active" onclick="resetScanAndPanic()">Dashboard / Threat Matrix</a>
+            <a class="nav-link" onclick="openModal('firewall')">Antivirus & Firewall</a>
+            <a class="nav-link" onclick="openModal('passwords')">Password Vault</a>
+            <a class="nav-link expired" onclick="triggerUpgradeSpam()">Upgrade to Premium ($99,999/sec)</a>
+        </nav>
+
+        <div class="header-right">
+            <!-- Negative Countdown Timer Badge -->
+            <div class="timer-badge-container" onclick="openModal('panic')">
+                <span class="timer-label">Session Expiring:</span>
+                <span class="timer-value" id="negativeTimer">05:00</span>
+            </div>
+
+            <button class="mute-btn" onclick="toggleMuteAudio()">
+                <span id="muteIcon">🔊</span> Audio
+            </button>
+        </div>
+    </header>
+
+    <!-- App Body with Sidebar & Dashboard -->
+    <div class="app-body">
+        
+        <!-- Clean SaaS Sidebar -->
+        <aside class="app-sidebar">
+            <div class="sidebar-item active" onclick="resetScanAndPanic()">
+                <span class="sidebar-icon">📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="sidebar-item" onclick="openModal('firewall')">
+                <span class="sidebar-icon">🔥</span>
+                <span>Antivirus & Firewall</span>
+            </div>
+            <div class="sidebar-item" onclick="openModal('passwords')">
+                <span class="sidebar-icon">🔑</span>
+                <span>Password Vault</span>
+            </div>
+            <div class="sidebar-item" onclick="openModal('webcam')">
+                <span class="sidebar-icon">📷</span>
+                <span>Webcam Shield</span>
+            </div>
+            <div class="sidebar-item" onclick="openModal('identity')">
+                <span class="sidebar-icon">🐐</span>
+                <span>Identity Protection</span>
+            </div>
+            <div class="sidebar-item" onclick="openModal('quarantine')">
+                <span class="sidebar-icon">☣️</span>
+                <span>Quarantine Zone</span>
+            </div>
+            <div class="sidebar-item" onclick="openModal('panic')">
+                <span class="sidebar-icon">⚙️</span>
+                <span>Settings & Panic</span>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            
+            <!-- Aggressive Modern Header Banner -->
+            <h1 class="final-warning-header" onclick="triggerManualAlerts()">FINAL WARNING</h1>
+
+            <!-- Unexplained Congratulations Banner -->
+            <div>
+                <div class="congrats-floating-pill" onclick="openModal('congrats')">
+                    🎉 CONGRATULATIONS! YOW WON $1000 GIFTCARD! (CLICK ME)
+                </div>
+            </div>
+
+            <!-- Hero Panic Card (Activates after scan finishes) -->
+            <div class="panic-hero-card" id="panicHeroCard">
+                <div class="panic-hero-title">YOUR COMPUTER HAS BEEN INFECTED WITH 47 VIRUSES. THIS IS NOT A DRILL.</div>
+                <div class="panic-hero-sub">System memory corrupted. Immediate SOC intervention recommended.</div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                
+                <!-- Left 8-Col Panel: Deep Scan Engine -->
+                <div class="card" style="grid-column: span 8;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>🔍</span> Deep Threat AI Heuristic Scan
+                        </div>
+                        <span id="scanStatusPill" style="font-size: 0.75rem; font-weight: 700; color: var(--amber-warn);">SCANNING...</span>
+                    </div>
+
+                    <!-- Metric Row -->
+                    <div class="metrics-row">
+                        <div class="metric-tile" onclick="openModal('quarantine')">
+                            <div class="metric-label">System Integrity</div>
+                            <div class="metric-value danger" id="integrityVal">100%</div>
+                        </div>
+                        <div class="metric-tile" onclick="openModal('quarantine')">
+                            <div class="metric-label">Threat Vectors</div>
+                            <div class="metric-value danger" id="threatVal">0 Active</div>
+                        </div>
+                        <div class="metric-tile" onclick="openModal('webcam')">
+                            <div class="metric-label">Webcam Hijack</div>
+                            <div class="metric-value" style="color: var(--amber-warn);">MONITORED</div>
+                        </div>
+                    </div>
+
+                    <!-- Scan Progress Bar -->
+                    <div class="scan-progress-box">
+                        <div class="scan-labels">
+                            <span id="scannedPath">Analyzing C:\System32\drivers\emotions.sys</span>
+                            <span id="progressText">0%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <button class="btn-saas btn-amber" onclick="triggerManualAlerts()">BUY MCAFEE</button>
+                        <button class="btn-saas btn-danger" onclick="triggerUltraScan()">SCAN NOW (TURBO SCAN)</button>
+                        <button class="btn-saas btn-secondary" onclick="exportThreatReport()">EXPORT THREAT REPORT</button>
+                    </div>
+                </div>
+
+                <!-- Right 4-Col Panel: Quick Status -->
+                <div class="card" style="grid-column: span 4;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>🚨</span> SOC Operations Support
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 20px;">
+                        Emergency hotline active. Connect directly to lead SOC engineer Dave for instant manual virus extraction.
+                    </p>
+
+                    <div style="background: rgba(15, 23, 42, 0.8); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); text-align: center; cursor: pointer;" onclick="promptDaveCall()">
+                        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">TOLL-FREE EMERGENCY HOTLINE</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--amber-warn); font-family: 'JetBrains Mono'; margin: 4px 0;">1-800-NOT-SCAM</div>
+                        <div style="font-size: 0.68rem; color: var(--red-alert); font-weight: 600;">(CLICK TO ROTARY DIAL DAVE)</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <footer class="footer-disclaimer">
+                McAfee Total protection panel. Scan now to prevent virus 🦠 
+            </footer>
+        </main>
+    </div>
+
+    <!-- Live Chat Widget ("Dave") -->
+    <div class="chat-drawer">
+        <div class="chat-header">
+            <div class="dave-avatar">D</div>
+            <div class="dave-info">
+                <div class="dave-name">Dave</div>
+                <div class="dave-status">● Senior SOC Lead (Online)</div>
+            </div>
+        </div>
+        <div class="chat-messages" id="chatContainer">
+            <div class="msg-bubble dave">
+                Hello, I am Dave, Senior Security Operations Center
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Message Dave..." onkeydown="if(event.key==='Enter') handleUserMessage()">
+            <button class="chat-send-btn" onclick="handleUserMessage()">SEND</button>
+        </div>
+    </div>
+
+    <!-- REUSABLE MODAL DIALOG CONTAINER -->
+    <div class="modal-overlay" id="appModalOverlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">⚠️ SECURITY DIALOG</div>
+                <button class="toast-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic Content Injected Here -->
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <button class="btn-saas btn-danger" onclick="closeModal()">CLOSE WARNING</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --------------------------------------------------
+         * WEB AUDIO API SYNTHESIZER
+         * Pure synthesized sound effects
+         * -------------------------------------------------- */
+        let audioCtx = null;
+        let soundMuted = false;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleMuteAudio() {
+            soundMuted = !soundMuted;
+            document.getElementById('muteIcon').innerText = soundMuted ? '🔇' : '🔊';
+        }
+
+        function playSynthSound(type = 'beep') {
+            if (soundMuted) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'beep') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.12);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.12);
+                } else if (type === 'dave') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.2);
+                } else if (type === 'siren') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                }
+            } catch (e) {}
+        }
+
+        /* --------------------------------------------------
+         * SCANNER & PANIC STATE
+         * -------------------------------------------------- */
+        let scanProgress = 0;
+        let scanInterval = null;
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const scanStatusPill = document.getElementById('scanStatusPill');
+        const integrityVal = document.getElementById('integrityVal');
+        const threatVal = document.getElementById('threatVal');
+        const panicHeroCard = document.getElementById('panicHeroCard');
+        const appBody = document.getElementById('appBody');
+
+        function startHeuristicScan(speed = 60) {
+            if (scanInterval) clearInterval(scanInterval);
+            scanProgress = 0;
+            scanStatusPill.innerText = "SCANNING...";
+            scanStatusPill.style.color = "var(--amber-warn)";
+            panicHeroCard.style.display = "none";
+            appBody.classList.remove('flash-panic-bg');
+
+            scanInterval = setInterval(() => {
+                if (scanProgress < 100) {
+                    scanProgress += Math.floor(Math.random() * 4) + 1;
+                    if (scanProgress > 100) scanProgress = 100;
+
+                    progressBar.style.width = scanProgress + '%';
+                    progressText.innerText = scanProgress + '%';
+
+                    if (scanProgress > 20) {
+                        integrityVal.innerText = Math.max(0, 100 - Math.floor(scanProgress * 0.98)) + '%';
+                        threatVal.innerText = Math.floor(scanProgress / 2.1) + ' Active';
+                    }
+                } else {
+                    clearInterval(scanInterval);
+                    scanStatusPill.innerText = "SYSTEM WARNING! VIRUSESSES DETECTED";
+                    scanStatusPill.style.color = "var(--red-alert)";
+                    integrityVal.innerText = "0.02%";
+                    threatVal.innerText = "47 Active";
+
+                    panicHeroCard.style.display = "block";
+                    appBody.classList.add('flash-panic-bg');
+
+                    playSynthSound('siren');
+                    startToastSpawner();
+                }
+            }, speed);
+        }
+
+        function triggerUltraScan() {
+            playSynthSound('siren');
+            startHeuristicScan(15);
+        }
+
+        function resetScanAndPanic() {
+            playSynthSound('siren');
+            startHeuristicScan(40);
+            openModal('panicAlert');
+        }
+
+        /* --------------------------------------------------
+         * NEGATIVE COUNTDOWN TIMER
+         * -------------------------------------------------- */
+        let secondsRemaining = 300; // Starts at 05:00
+        const negativeTimer = document.getElementById('negativeTimer');
+
+        setInterval(() => {
+            secondsRemaining--;
+            const absSecs = Math.abs(secondsRemaining);
+            const mins = String(Math.floor(absSecs / 60)).padStart(2, '0');
+            const secs = String(absSecs % 60).padStart(2, '0');
+
+            if (secondsRemaining < 0) {
+                negativeTimer.innerText = `-${mins}:${secs}`;
+            } else {
+                negativeTimer.innerText = `${mins}:${secs}`;
+            }
+        }, 1000);
+
+        /* --------------------------------------------------
+         * TOAST POP-UP NOTIFICATIONS
+         * -------------------------------------------------- */
+        const scareMessages = [
+            "MCAFEE ALERT! VIRUSES FOUUND!.",
+            "SYSTEM WARNING! CLICK HERE TO REMOVE THEM!!.",
+            "YOUR WEBCAM IS WATCHING YOU WATCH YOUR WEBCAM WATCHING YOU.",
+            "SYSTEM IS INFECTED! CLICK HERE TO SCAN AND CLEAN!.",
+            "NO, HERE."
+        ];
+
+        let msgIndex = 0;
+
+        function spawnNotification(customMsg = null) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-popover';
+
+            const maxLeft = window.innerWidth - 380;
+            const maxTop = window.innerHeight - 200;
+            const posX = Math.max(20, Math.floor(Math.random() * maxLeft));
+            const posY = Math.max(80, Math.floor(Math.random() * maxTop));
+
+            toast.style.left = posX + 'px';
+            toast.style.top = posY + 'px';
+
+            const text = customMsg || scareMessages[msgIndex % scareMessages.length];
+            msgIndex++;
+
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <span class="toast-title">⚠️ SECURITY NOTIFICATION</span>
+                    <button class="toast-close" onclick="closeToast(this)">✕</button>
+                </div>
+                <div class="toast-body">
+                    <div class="toast-message">${text}</div>
+                    <button class="toast-btn" onclick="closeToast(this)">RESOLVE IMMEDIATELY</button>
+                </div>
+            `;
+
+            document.body.appendChild(toast);
+            playSynthSound('beep');
+        }
+
+        function closeToast(btn) {
+            const toast = btn.closest('.toast-popover');
+            if (toast) toast.remove();
+
+            if (Math.random() > 0.4) {
+                setTimeout(() => spawnNotification("CLICKING CLOSE HAS INCREASED RISK LEVEL."), 200);
+            }
+        }
+
+        function triggerManualAlerts() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => spawnNotification(), i * 150);
+            }
+        }
+
+        let spawnerStarted = false;
+        function startToastSpawner() {
+            if (spawnerStarted) return;
+            spawnerStarted = true;
+
+            setInterval(() => {
+                spawnNotification();
+            }, 2000);
+        }
+
+        function triggerUpgradeSpam() {
+            playSynthSound('siren');
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    spawnNotification("DISCOUNT APPLIED: $99,999/sec PREMIER ZERO-TRUST BILLING");
+                }, i * 120);
+            }
+        }
+
+        /* --------------------------------------------------
+         * MODAL DIALOG INTERACTIVE HANDLERS
+         * -------------------------------------------------- */
+        const modalOverlay = document.getElementById('appModalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const modalFooter = document.getElementById('modalFooter');
+
+        function openModal(type) {
+            playSynthSound('beep');
+            modalOverlay.classList.add('active');
+
+            if (type === 'firewall') {
+                modalTitle.innerText = "🔥 MC-NOT-AFEE ZERO-TRUST FIREWALL STATUS";
+                modalBody.innerHTML = `
+                    <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid var(--red-alert); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 16px;">
+                        <h2 style="color: var(--red-alert); font-size: 1.1rem; font-weight: 800;">FIREWALL STATUS: LITERAL FIRE</h2>
+                        <p style="color: #fca5a5; font-size: 0.85rem; margin-top: 6px;">CORE TEMPERATURE: 4,500°F (RECOMMENDED: ROOM TEMP)</p>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+                        Your perimeter defense hardware has physically combusted. Standard software patches will fail unless cash reserves are deployed.
+                    </p>
+                `;
+                modalFooter.innerHTML = `
+                    <button class="btn-saas btn-amber" onclick="spawnNotification('CASH DEPLOYED. FIRE NOW HOTTER.'); closeModal();">Extinguish Fire with Cash ($500)</button>
+                    <button class="btn-saas btn-danger" onclick="closeModal()">IGNORE FIRE</button>
+                `;
+            } 
+            else if (type === 'passwords') {
+                modalTitle.innerText = "🔑 COMPROMISED PASSWORD REVEAL";
+                modalBody.innerHTML = `
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 14px;">
+                        The following plaintext credentials were recovered on the public darknet index:
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="background: rgba(15, 23, 42, 0.8); padding: 10px 14px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 0.8rem; color: #fca5a5; border: 1px solid var(--border-color);">
+                            🔒 admin123 <span style="color: var(--text-muted);">(Stolen by Dave)</span>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.8); padding: 10px 14px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 0.8rem; color: #fca5a5; border: 1px solid var(--border-color);">
+                            🔒 hunter2 <span style="color: var(--text-muted);">(Sold on eBay for $0.04)</span>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.8); padding: 10px 14px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 0.8rem; color: #fca5a5; border: 1px solid var(--border-color);">
+                            🔒 password <span style="color: var(--text-muted);">(Directly emailed to Neil)</span>
+                        </div>
+                    </div>
+                `;
+                modalFooter.innerHTML = `<button class="btn-saas btn-danger" onclick="closeModal()">CHANGE ALL TO 'Password123'</button>`;
+            } 
+            else if (type === 'webcam') {
+                modalTitle.innerText = "📷 WEBCAM LIVESTREAM MONITOR";
+                modalBody.innerHTML = `
+                    <div class="webcam-viewport">
+                        <div class="webcam-scanline"></div>
+                        <div style="font-size: 2.5rem; margin-bottom: 10px;">👁️👄👁️</div>
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--red-alert); background: rgba(0,0,0,0.8); padding: 4px 10px; border-radius: 4px; text-align: center;">
+                            WEBCAM IS WATCHING YOU WATCH IT WATCHING YOU WATCH IT WATCH YOU<br>
+                            <span style="color: var(--amber-warn); font-size: 0.68rem;">2160p 60fps HD Feed directly streaming to Neil's Smart TCL GOOGLE TV</span>
+                        </div>
+                    </div>
+                `;
+                modalFooter.innerHTML = `<button class="btn-saas btn-amber" onclick="spawnNotification('NEIL LIKED YOUR STREAM.'); closeModal();">WAVE TO NEIL</button>`;
+            } 
+            else if (type === 'identity') {
+                modalTitle.innerText = "🐐 IDENTITY EXCHANGE HUB";
+                modalBody.innerHTML = `
+                    <div style="text-align: center; padding: 10px;">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">🐐</div>
+                        <h3 style="color: var(--text-primary); font-size: 1rem; font-weight: 800;">IDENTITY SWAP COMPLETE</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 8px;">
+                            Your Social Security Profile has been officially swapped with a prize-winning goat in Kearney, Nebraska.
+                        </p>
+                    </div>
+                `;
+                modalFooter.innerHTML = `
+                    <button class="btn-saas btn-amber" onclick="spawnNotification('RECLAIM FAILED: GOAT DECLINED TRANSACTION.'); closeModal();">Reclaim Human Identity ($49.99)</button>
+                    <button class="btn-saas btn-secondary" onclick="closeModal()">EMBRACE GOAT LIFE</button>
+                `;
+            } 
+            else if (type === 'quarantine') {
+                modalTitle.innerText = "☣️ CONTAINMENT CELL (47 ACTIVE VIRUSES)";
+                
+                const virusNames = ["TROJAN.81536.EXE", "NEIL_WORM_V3", "WORM.MCFEE.FIRE", "BONZI_RANSOM", "CRYPTO_NEIL", "SPYWARE_815"];
+                let gridHtml = '';
+                for (let i = 0; i < 12; i++) {
+                    const name = virusNames[i % virusNames.length];
+                    gridHtml += `<div class="virus-chip">🦠 ${name}</div>`;
+                }
+
+                modalBody.innerHTML = `
+                    <p style="font-size: 0.82rem; color: var(--text-secondary);">Trapped malicious entities executing active wiggle animations:</p>
+                    <div class="virus-cell-grid">${gridHtml}</div>
+                `;
+                modalFooter.innerHTML = `<button class="btn-saas btn-danger" onclick="spawnNotification('VIRUSES RELEASED BACK INTO RAM.'); closeModal();">RELEASE ALL VIRUSES</button>`;
+            } 
+            else if (type === 'panic' || type === 'panicAlert') {
+                modalTitle.innerText = "🚨 EMERGENCY CONTROLS & PANIC";
+                modalBody.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <button class="btn-saas btn-danger" style="padding: 14px;" onclick="spawnNotification('SYSTEM32 DELETION IN PROGRESS...'); closeModal();">DELETE SYSTEM32 NOW</button>
+                        <button class="btn-saas btn-amber" style="padding: 14px;" onclick="promptDaveCall(); closeModal();">CALL DAVE ON ROTARY PHONE</button>
+                        <button class="btn-saas btn-secondary" style="padding: 14px;" onclick="triggerUpgradeSpam(); closeModal();">DO NOT CLICK THIS BUTTON</button>
+                    </div>
+                `;
+                modalFooter.innerHTML = `<button class="btn-saas btn-secondary" onclick="closeModal()">CANCEL PANIC</button>`;
+            } 
+            else if (type === 'congrats') {
+                modalTitle.innerText = "🎉 CONGRATULATIONS!";
+                modalBody.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">🏆</div>
+                        <h2 style="color: var(--amber-warn); font-size: 1.2rem; font-weight: 800;">YOU ARE USER #1,000,000</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 8px;">
+                            No further context or explanation will be provided by Aegis SecOps.
+                        </p>
+                    </div>
+                `;
+                modalFooter.innerHTML = `<button class="btn-saas btn-amber" onclick="closeModal()">ACCEPT UNEXPLAINED AWARD</button>`;
+            }
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+
+        function exportThreatReport() {
+            playSynthSound('beep');
+            openModal('panic');
+            spawnNotification("THREAT REPORT: YOU ARE DOOMED. LOG FILE CREATED IN THE CLOUD ☁️.");
+        }
+
+        function promptDaveCall() {
+            playSynthSound('dave');
+            spawnNotification("ROTARY DIAL CONNECTED TO DAVE'S DESK PHONE.");
+        }
+
+        /* --------------------------------------------------
+         * DAVE LIVE CHAT LOGIC
+         * -------------------------------------------------- */
+        const chatContainer = document.getElementById('chatContainer');
+        const chatInput = document.getElementById('chatInput');
+
+        function handleUserMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'msg-bubble user';
+            userMsg.innerText = text;
+            chatContainer.appendChild(userMsg);
+
+            chatInput.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Immediate Dave Response
+            setTimeout(() => {
+                const daveMsg = document.createElement('div');
+                daveMsg.className = 'msg-bubble dave';
+                daveMsg.innerText = "YOUR DEVICE IS COMPROMISED PLEASE CALL NOW.";
+                chatContainer.appendChild(daveMsg);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                playSynthSound('dave');
+            }, 400);
+        }
+
+        // Initialize audio context on first click & trigger scan
+        window.onload = function() {
+            startHeuristicScan();
+
+            document.body.addEventListener('click', function initAudioOnUserGesture() {
+                getAudioContext();
+                document.body.removeEventListener('click', initAudioOnUserGesture);
+            }, { once: true });
+        };
+    </script>
+</body>
+</html>
+```
